@@ -28,6 +28,7 @@ while ($columna = $resultado->fetch_assoc()) {
 		"email: ".$columna["email"]."<br>".
 		"password: ".$columna["password"]."<br>".
 		"role: ".$columna["role"]."<br>".
-		"imagen: ".$columna["imagen"]."<br>";
+		"imagen: <br><br><img src='uploads/".$columna["imagen"]."' width='140'><br>";
+		
 }
 ?>

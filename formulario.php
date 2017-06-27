@@ -72,20 +72,39 @@ if (isset($_POST["submit"])) {
 		$errors["rol"]= "rol invalido";
 	}
 	//var_dump($_FILE["imagen"]);
-	if(isset($_FILE["imagen"]) && !empty($_FILE["imagen"]))
+	$imagen =null;
+	if(isset($_FILES["imagen"]) && !empty($_FILES["imagen"]["tmp_name"]))
 	{
 		//$imagen_validate = true;
-		
+		if (!is_dir("uploads")) {
+			# code...
+			$dir=mkdir("uploads", 0777, true);
+		}
+		else{
+			$dir=true;
+		}
+		if ($dir) {
+			# code...
+			$filename=time().$_FILES["imagen"]["name"];
+			$muf = move_uploaded_file($_FILES["imagen"]["tmp_name"], "uploads/".$filename);
+			$imagen =$filename;
+			if($muf){
+				$image_upload=true;
+			}else{
+				$errors["imagen"]= "la imagen no se ah subido";
+				$image_upload=false;
+			}
+		}
 	}
-	/*else {
+	else {
 		$imagen_validate = false;
 		$errors["imagen"]= "imagen no encontrada";
-	}*/
+	}
 	var_dump($errors);
 	//insertar usuario en la base de datos
 	if (count($errors)==0) {
 		# code...
-		$sql = "INSERT INTO usuarios VALUES( null ,'".$_POST["nombre"]."' , '".$_POST["apellidos"]."' , '".$_POST["bio"]."' , '".$_POST["email"]."' , '".sha1($_POST["contrasena"])."' , '".$_POST["rol"]."' , null );";
+		$sql = "INSERT INTO usuarios VALUES( null ,'".$_POST["nombre"]."' , '".$_POST["apellidos"]."' , '".$_POST["bio"]."' , '".$_POST["email"]."' , '".sha1($_POST["contrasena"])."' , '".$_POST["rol"]."' , '".$imagen."' );";
 		if (mysqli_query($conn, $sql)) {
     	echo "Table MyGuests created successfully";
     	mysqli_close($conn);
@@ -109,11 +128,18 @@ function showError($errors, $campo){
 	}
 	return $alert;
 }
-function defaultValue($errors, $campo)
+function defaultValue($errors, $campo, $textarea=false)
 {
-	if(isset($errors[$campo]) && count($errors)>=1 && isset($_POST[$campo])) {
-	# code...
+	if(isset($_POST[$campo]) && count($errors)>=1 && isset($_POST[$campo])) {
+		if ($textarea != false) {
+			# code...
+			echo $_POST[$campo];
+		}
+		else{
+			# code...
 	echo "value='".$_POST[$campo]."'";
+		}
+	
 	}
 }
 ?>
@@ -131,12 +157,12 @@ Name: <input type="text" name="nombre" <?php defaultValue($errors, "nombre") ?>>
 <?php echo showError($errors,"nombre"); ?><br><br>
 Apellidos: <input type="text" name="apellidos"<?php defaultValue($errors, "apellidos")
  ?>><?php echo showError($errors,"apellidos"); ?><br><br>
-Biografía: <textarea name="bio" rows="5" cols="40"></textarea><?php echo showError($errors,"bio"); ?><br><br>
+Biografía: <textarea name="bio" rows="5" cols="40"><?php  defaultValue($errors, 'bio', true) ?></textarea><?php echo showError($errors,"bio"); ?><br><br>
 E-mail: <input type="text" name="email"<?php 
 defaultValue($errors, "email") ?>>
 <?php echo showError($errors,"email"); ?><br><br>
 Imagen: <input type="file" name="imagen"><br><br>
-Contraseña: <input type="password" name="contrasena"><?php echo showError($errors,"contrasena"); ?><br><br>
+Contraseña: <input type="password" name="contrasena"<?php defaultValue($errors, "contrasena") ?>><?php echo showError($errors,"contrasena"); ?><br><br>
 Rol: <select name="rol">
 	<option value="normal">Normal</option>
 	<option value="administrador">Administrador</option>
