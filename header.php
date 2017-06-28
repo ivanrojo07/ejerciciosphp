@@ -1,5 +1,5 @@
 <?php
 echo "<head>
-	<title>Ejercicio diecinueve</title>
+	<title>Index</title>
 	</head>";
 ?>

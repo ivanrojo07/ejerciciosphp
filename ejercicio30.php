@@ -1,4 +1,5 @@
 <?php
+include 'redirect.php';
 #parametros
 if (isset($_GET["id"])) {
 	# code...

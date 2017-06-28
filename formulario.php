@@ -1,5 +1,6 @@
 <?php
 require_once 'enviar.php';
+include 'redirect.php';
 $errors = [];
 $conn = mysqli_connect('localhost', 'root', 'ivanrojo07@', 'cursophp');
 // Check connection

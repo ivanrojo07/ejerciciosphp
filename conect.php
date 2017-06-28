@@ -6,6 +6,7 @@ $conn = mysqli_connect('localhost', 'root', 'ivanrojo07@', 'cursophp');
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
-mysqli_query($conn, "SET NAMES 'utf8'");
+session_start();
+//mysqli_query($conn, "SET NAMES 'utf8'");
 
  ?>
